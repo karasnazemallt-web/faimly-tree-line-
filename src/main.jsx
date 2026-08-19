@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createRoot } from 'react-dom/client'
 import './styles.css'
 
 const seed = {
@@ -81,6 +82,8 @@ function App() {
     {modal && <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setModal(null)}><form className="modal" onSubmit={updatePerson}><div className="modal-top"><div><span className="eyebrow">{modal === 'edit' ? 'EDIT PROFILE' : 'NEW BRANCH'}</span><h2>{modal === 'edit' ? 'Update their story' : 'Add to the family'}</h2></div><button type="button" className="closeish" onClick={() => setModal(null)}>×</button></div><label>Name<input name="name" defaultValue={modal === 'edit' ? selected.name : ''} required placeholder="Their full name" /></label><div className="field-row"><label>Role<input name="role" defaultValue={modal === 'edit' ? selected.role : 'Family member'} /></label><label>Born<input name="birth" defaultValue={modal === 'edit' ? selected.birth : ''} placeholder="Year" /></label></div><label>Hometown<input name="location" defaultValue={modal === 'edit' ? selected.location : ''} placeholder="Where they are from" /></label><label>One line about them<textarea name="note" defaultValue={modal === 'edit' ? selected.note : ''} placeholder="A memory, a detail, a feeling..." /></label><button className="primary-btn wide" type="submit">{modal === 'edit' ? 'Save changes' : 'Add to the tree'} <span>→</span></button></form></div>}
   </main>
 }
+
+createRoot(document.getElementById('root')).render(<App />)
 
 function PersonCard({ person, selectedId, onSelect }) { return <button className={`person-card ${selectedId === person.id ? 'selected' : ''}`} onClick={() => onSelect(person.id)}><div className="avatar">{person.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</div><div><strong>{person.name}</strong><small>{person.role}</small></div><span className="card-arrow">↗</span></button> }
 
