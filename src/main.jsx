@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles.css'
+import './motion.css'
 
 const seed = {
   id: 'arthur', name: 'Arthur Whitmore', role: 'Grand-grandfather', birth: '1921', location: 'Bristol, UK', note: 'The root of your story.', partnerId: 'elise', children: ['margaret', 'thomas'], parentId: null,
@@ -21,17 +22,13 @@ function useAmbientSound() {
   const audio = useRef(null)
   const [playing, setPlaying] = useState(false)
   const [track, setTrack] = useState(0)
-  useEffect(() => () => audio.current?.close(), [])
-  const toggle = () => {
-    if (playing) { audio.current?.close(); audio.current = null; setPlaying(false); return }
-    const context = new AudioContext()
-    const master = context.createGain(); master.gain.value = 0.035; master.connect(context.destination)
-    const notes = track % 2 ? [220, 277, 330, 440] : [196, 247, 294, 392]
-    notes.forEach((frequency, index) => { const oscillator = context.createOscillator(); oscillator.type = 'sine'; oscillator.frequency.value = frequency; oscillator.connect(master); oscillator.start(context.currentTime + index * 0.7); oscillator.stop(context.currentTime + 8 + index * 0.7) })
-    audio.current = context; setPlaying(true)
-  }
-  useEffect(() => { const timer = setInterval(() => setTrack((value) => value + 1), 120000); return () => clearInterval(timer) }, [])
-  return { playing, track, toggle }
+  const tracks = ['https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3']
+  useEffect(() => () => audio.current?.pause(), [])
+  useEffect(() => { const timer = setInterval(() => setTrack((value) => (value + 1) % tracks.length), 120000); return () => clearInterval(timer) }, [])
+  useEffect(() => { if (audio.current && playing) { audio.current.src = tracks[track]; audio.current.play().catch(() => setPlaying(false)) } }, [track, playing])
+  const play = () => { if (!audio.current) audio.current = new Audio(tracks[track]); audio.current.loop = true; audio.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false)) }
+  const stop = () => { audio.current?.pause(); setPlaying(false) }
+  return { playing, track, play, stop }
 }
 
 function getSavedPeople() {
@@ -56,14 +53,14 @@ function App() {
     try { localStorage.setItem('roots-tree', JSON.stringify(people)) } catch { /* local persistence is optional */ }
   }, [people])
   const updatePerson = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const id = modal === 'edit' ? selectedId : crypto.randomUUID(); const person = { id, name: form.get('name'), role: form.get('role'), birth: form.get('birth'), location: form.get('location'), note: form.get('note'), partnerId: null, children: [], parentId: selectedId }; setPeople((current) => { const next = { ...current, [id]: person, [selectedId]: { ...current[selectedId], children: [...current[selectedId].children, id] } }; return next }); setModal(null); }
-  const deletePerson = () => { if (code !== '8123') return; setPeople((current) => { const next = { ...current }; delete next[selectedId]; Object.values(next).forEach((person) => { person.children = person.children.filter((id) => id !== selectedId) }); return next }); setSelectedId('arthur'); setDeleteMode(false); setCode('') }
+  const deletePerson = () => { if (code !== '6767' || selectedId === 'arthur') return; setPeople((current) => { const next = { ...current }; delete next[selectedId]; Object.values(next).forEach((person) => { person.children = person.children.filter((id) => id !== selectedId) }); return next }); setSelectedId('arthur'); setDeleteMode(false); setCode('') }
   return <main className="app-shell">
     <aside className="sidebar">
       <div className="brand"><span className="brand-mark">✦</span><div><strong>Roots<span>&</span>Branches</strong><small>A living family archive</small></div></div>
       <div className="side-rule" />
       <p className="eyebrow">YOUR ARCHIVE</p>
       <nav><button className="nav-item active"><span>⌂</span> Family tree <b>1</b></button><button className="nav-item" onClick={() => setModal('edit')}><span>✎</span> My profile</button></nav>
-      <div className="sidebar-footer"><p className="eyebrow">TREE HEALTH</p><div className="health"><span><i /> Synced locally</span><b>{Object.keys(people).length} people</b></div><div className="audio-card"><div><span className="pulse">◒</span><div><strong>Ambient archive</strong><small>Track {sound.track + 1} · changes hourly</small></div></div><button onClick={sound.toggle} aria-label="Toggle ambient sound">{sound.playing ? 'Ⅱ' : '▶'}</button></div></div>
+      <div className="sidebar-footer"><p className="eyebrow">TREE HEALTH</p><div className="health"><span><i /> Synced locally</span><b>{Object.keys(people).length} people</b></div><div className="audio-card"><div><span className={`pulse ${sound.playing ? 'playing' : ''}`}>◒</span><div><strong>Relaxing music</strong><small>Track {sound.track + 1} · changes in 2 min</small></div></div><div className="audio-controls"><button onClick={sound.play} aria-label="Play relaxing music">▶</button><button onClick={sound.stop} aria-label="Stop relaxing music">■</button></div></div></div>
     </aside>
     <section className="workspace">
       <header className="topbar"><div><p className="eyebrow">FAMILY TREE / OVERVIEW</p><h1>Where your story begins.</h1></div><div className="top-actions"><button className="ghost-btn" onClick={() => setModal('edit')}>Edit selected</button><button className="primary-btn" onClick={() => setModal('add')}>＋ Add family member</button></div></header>
