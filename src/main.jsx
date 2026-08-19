@@ -4,6 +4,7 @@ import './styles.css'
 import './motion.css'
 import './family.css'
 import './light-theme.css'
+import './tree-image.css'
 
 const seed = {
   id: 'arthur', name: 'Arthur Whitmore', role: 'Grand-grandfather', birth: '1921', location: 'Bristol, UK', note: 'The root of your story.', partnerId: 'elise', children: ['margaret', 'thomas'], parentId: null,
@@ -71,7 +72,7 @@ function App() {
       <header className="topbar"><div><p className="eyebrow">FAMILY TREE / OVERVIEW</p><h1>Where your story begins.</h1></div><div className="top-actions"><button className="ghost-btn" onClick={() => requestEdit(() => setModal('edit'))}>Edit selected <span>🔒</span></button><button className="primary-btn" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add family member</button></div></header>
       <div className="tree-stage">
         <div className="stage-note"><span className="line-dot" /> Click any person to explore their branch</div><div className="zoom-tools"><button onClick={() => setZoom((value) => Math.max(.7, value - .1))} aria-label="Zoom out">−</button><span>{Math.round(zoom * 100)}%</span><button onClick={() => setZoom((value) => Math.min(1.5, value + .1))} aria-label="Zoom in">＋</button><button onClick={() => setZoom(1)} aria-label="Reset zoom">↺</button></div>
-        <div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
+        <div className="watercolor-tree" aria-hidden="true"><img src="https://img.magnific.com/free-vector/watercolor-family-tree_23-2147602413.jpg?semt=ais_hybrid&w=740&q=80" alt="" /></div><div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
           <div className="root-couple"><PersonCard person={selected} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{partner ? <PersonCard person={partner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'), false)}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
           <div className="connector" />
           <div className="branch-label"><span>THEIR CHILDREN</span><i /> <em>{children.length} {children.length === 1 ? 'child' : 'children'}</em></div>
