@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './styles.css'
 import './motion.css'
 import './family.css'
+import './light-theme.css'
 
 const seed = {
   id: 'arthur', name: 'Arthur Whitmore', role: 'Grand-grandfather', birth: '1921', location: 'Bristol, UK', note: 'The root of your story.', partnerId: 'elise', children: ['margaret', 'thomas'], parentId: null,
@@ -20,16 +21,11 @@ const initialPeople = {
 }
 
 function useAmbientSound() {
-  const audio = useRef(null)
+  const player = useRef(null)
   const [playing, setPlaying] = useState(false)
-  const [track, setTrack] = useState(0)
-  const tracks = ['https://archive.org/download/jamendo-425054/01-1738724-DepasRec-By%20the%20sea%20_Relaxing%20piano%20background_.mp3', 'https://archive.org/download/jamendo-453291/01-1882196-Bulbasound-Relaxing%20Piano%20Music%20for%20Meditation.mp3']
-  useEffect(() => () => audio.current?.pause(), [])
-  useEffect(() => { const timer = setInterval(() => setTrack((value) => (value + 1) % tracks.length), 120000); return () => clearInterval(timer) }, [])
-  useEffect(() => { if (audio.current && playing) { audio.current.src = tracks[track]; audio.current.play().catch(() => setPlaying(false)) } }, [track, playing])
-  const play = () => { if (!audio.current) audio.current = new Audio(tracks[track]); audio.current.loop = true; audio.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false)) }
-  const stop = () => { audio.current?.pause(); setPlaying(false) }
-  return { playing, track, play, stop }
+  const play = () => { player.current?.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*'); setPlaying(true) }
+  const stop = () => { player.current?.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*'); setPlaying(false) }
+  return { playing, player, play, stop }
 }
 
 function getSavedPeople() {
@@ -69,7 +65,7 @@ function App() {
       <div className="side-rule" />
       <p className="eyebrow">YOUR ARCHIVE</p>
       <nav><button className="nav-item active"><span>⌂</span> Family tree <b>1</b></button><button className="nav-item" onClick={() => requestEdit(() => setModal('edit'))}><span>✎</span> My profile <b>🔒</b></button></nav>
-      <div className="sidebar-footer"><p className="eyebrow">TREE HEALTH</p><div className="health"><span><i /> Synced locally</span><b>{Object.keys(people).length} people</b></div><div className="audio-card"><div><span className={`pulse ${sound.playing ? 'playing' : ''}`}>◒</span><div><strong>Relaxing music</strong><small>Track {sound.track + 1} · changes in 2 min</small></div></div><div className="audio-controls"><button onClick={sound.play} aria-label="Play relaxing music">▶</button><button onClick={sound.stop} aria-label="Stop relaxing music">■</button></div></div></div>
+      <div className="sidebar-footer"><p className="eyebrow">TREE HEALTH</p><div className="health"><span><i /> Synced locally</span><b>{Object.keys(people).length} people</b></div><div className="audio-card"><iframe ref={sound.player} className="music-player" title="Relaxing music" src="https://www.youtube-nocookie.com/embed/FbyXHLgL93A?enablejsapi=1&origin=https%3A%2F%2Fkarasnazemallt-web.github.io&controls=0&rel=0" allow="autoplay; encrypted-media" /><div><span className={`pulse ${sound.playing ? 'playing' : ''}`}>◒</span><div><strong>Requested relaxing song</strong><small>YouTube piano · play when ready</small></div></div><div className="audio-controls"><button onClick={sound.play} aria-label="Play requested song">▶</button><button onClick={sound.stop} aria-label="Stop requested song">■</button></div></div></div>
     </aside>
     <section className="workspace">
       <header className="topbar"><div><p className="eyebrow">FAMILY TREE / OVERVIEW</p><h1>Where your story begins.</h1></div><div className="top-actions"><button className="ghost-btn" onClick={() => requestEdit(() => setModal('edit'))}>Edit selected <span>🔒</span></button><button className="primary-btn" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add family member</button></div></header>
