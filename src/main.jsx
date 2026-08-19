@@ -23,7 +23,7 @@ function useAmbientSound() {
   const audio = useRef(null)
   const [playing, setPlaying] = useState(false)
   const [track, setTrack] = useState(0)
-  const tracks = ['https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3']
+  const tracks = ['https://archive.org/download/jamendo-425054/01-1738724-DepasRec-By%20the%20sea%20_Relaxing%20piano%20background_.mp3', 'https://archive.org/download/jamendo-453291/01-1882196-Bulbasound-Relaxing%20Piano%20Music%20for%20Meditation.mp3']
   useEffect(() => () => audio.current?.pause(), [])
   useEffect(() => { const timer = setInterval(() => setTrack((value) => (value + 1) % tracks.length), 120000); return () => clearInterval(timer) }, [])
   useEffect(() => { if (audio.current && playing) { audio.current.src = tracks[track]; audio.current.play().catch(() => setPlaying(false)) } }, [track, playing])
@@ -77,8 +77,8 @@ function App() {
         <div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
           <div className="root-couple"><PersonCard person={selected} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{partner ? <PersonCard person={partner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'))}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
           <div className="connector" />
-          <div className="branch-label"><span>THE FIRST BRANCH</span><i /> <em>2 children</em></div>
-          <div className="children-row">{children.map((person) => <PersonCard key={person.id} person={person} selectedId={selectedId} onSelect={setSelectedId} />)}<button className="add-card" onClick={() => requestEdit(() => setModal('add'))}><span>＋</span><strong>Add a branch</strong><small>Continue the story</small></button></div>
+          <div className="branch-label"><span>THEIR CHILDREN</span><i /> <em>{children.length} {children.length === 1 ? 'child' : 'children'}</em></div>
+          <div className="children-row">{children.map((person) => <PersonCard key={person.id} person={person} selectedId={selectedId} onSelect={setSelectedId} />)}<button className="add-card" onClick={() => requestEdit(() => setModal('add'))}><span>＋</span><strong>{children.length ? 'Add a child' : 'Add first child'}</strong><small>Continue the story</small></button></div>
         </div>
       </div>
       <footer className="workspace-footer"><span>Last saved just now</span><span>Private archive · Only you can edit</span></footer>
