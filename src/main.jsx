@@ -24,9 +24,11 @@ const initialPeople = {
 function useAmbientSound() {
   const player = useRef(null)
   const [playing, setPlaying] = useState(false)
-  const play = () => { player.current?.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*'); setPlaying(true) }
-  const stop = () => { player.current?.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*'); setPlaying(false) }
-  return { playing, player, play, stop }
+  const [ready, setReady] = useState(false)
+  const send = (func) => { if (!ready || !player.current?.contentWindow) return; player.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*') }
+  const play = () => { send('playVideo'); setPlaying(true) }
+  const stop = () => { send('stopVideo'); setPlaying(false) }
+  return { playing, player, play, stop, setReady }
 }
 
 function getSavedPeople() {
@@ -66,7 +68,7 @@ function App() {
       <div className="side-rule" />
       <p className="eyebrow">YOUR ARCHIVE</p>
       <nav><button className="nav-item active"><span>⌂</span> Family tree <b>1</b></button><button className="nav-item" onClick={() => requestEdit(() => setModal('edit'))}><span>✎</span> My profile <b>🔒</b></button></nav>
-      <div className="sidebar-footer"><p className="eyebrow">TREE HEALTH</p><div className="health"><span><i /> Synced locally</span><b>{Object.keys(people).length} people</b></div><div className="audio-card"><iframe ref={sound.player} className="music-player" title="Relaxing music" src="https://www.youtube-nocookie.com/embed/FbyXHLgL93A?enablejsapi=1&origin=https%3A%2F%2Fkarasnazemallt-web.github.io&controls=0&rel=0" allow="autoplay; encrypted-media" /><div><span className={`pulse ${sound.playing ? 'playing' : ''}`}>◒</span><div><strong>Requested relaxing song</strong><small>YouTube piano · play when ready</small></div></div><div className="audio-controls"><button onClick={sound.play} aria-label="Play requested song">▶</button><button onClick={sound.stop} aria-label="Stop requested song">■</button></div></div></div>
+      <div className="sidebar-footer"><p className="eyebrow">TREE HEALTH</p><div className="health"><span><i /> Synced locally</span><b>{Object.keys(people).length} people</b></div><div className="audio-card"><iframe ref={sound.player} onLoad={() => sound.setReady(true)} className="music-player" title="Relaxing music" src={`https://www.youtube-nocookie.com/embed/FbyXHLgL93A?enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}&controls=0&rel=0`} allow="autoplay; encrypted-media" /><div><span className={`pulse ${sound.playing ? 'playing' : ''}`}>◒</span><div><strong>Requested relaxing song</strong><small>{sound.playing ? 'Playing now' : 'YouTube piano · click play'}</small></div></div><div className="audio-controls"><button onClick={sound.play} aria-label="Play requested song">▶</button><button onClick={sound.stop} aria-label="Stop requested song">■</button></div></div></div>
     </aside>
     <section className="workspace">
       <header className="topbar"><div><p className="eyebrow">FAMILY TREE / OVERVIEW</p><h1>Where your story begins.</h1></div><div className="top-actions"><button className="ghost-btn" onClick={() => requestEdit(() => setModal('edit'))}>Edit selected <span>🔒</span></button><button className="primary-btn" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add family member</button></div></header>
@@ -89,6 +91,6 @@ function App() {
 
 createRoot(document.getElementById('root')).render(<App />)
 
-function PersonCard({ person, selectedId, onSelect }) { return <button className={`person-card ${selectedId === person.id ? 'selected' : ''}`} onClick={() => onSelect(person.id)}><div className="avatar">{person.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</div><div><strong>{person.name}</strong><small>{person.role}</small></div><span className="card-arrow">↗</span></button> }
+function PersonCard({ person, selectedId, onSelect }) { return <button className={`person-card person-${person.id} ${selectedId === person.id ? 'selected' : ''}`} onClick={() => onSelect(person.id)}><div className="avatar">{person.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</div><div><strong>{person.name}</strong><small>{person.role}</small></div><span className="card-arrow">↗</span></button> }
 
 export default App
