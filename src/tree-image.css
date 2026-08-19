@@ -1,10 +1,13 @@
 .tree-stage{background:#f6eddd;isolation:isolate;overflow:hidden}
 .tree-stage:before{display:block;content:'';position:absolute;z-index:-2;width:190px;height:190px;top:34px;right:12%;border-radius:50%;background:#f5c75f;box-shadow:0 0 0 18px #f5c75f18,0 0 70px #e3a63d66;animation:sunrise 12s ease-in-out infinite}
-.watercolor-tree{position:absolute;inset:70px 9% 28px;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;opacity:.86;z-index:-1}
+.watercolor-tree{position:absolute;inset:24px 1% 0;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;opacity:.9;z-index:-1}
 .watercolor-tree:after{content:'';position:absolute;left:15%;right:15%;bottom:4%;height:12%;border-radius:50%;background:#76533826;filter:blur(16px);transform:skewX(-12deg);animation:shadowDrift 8s ease-in-out infinite}
-.watercolor-tree img{width:min(740px,100%);height:100%;object-fit:contain;mix-blend-mode:multiply;filter:sepia(.2) saturate(.86) contrast(.96);transform-origin:50% 90%;animation:treeBreeze 8s ease-in-out infinite}
+.watercolor-tree img{width:min(920px,112%);height:112%;object-fit:contain;mix-blend-mode:multiply;filter:sepia(.28) saturate(.82) contrast(.96);transform-origin:50% 90%;animation:treeBreeze 8s ease-in-out infinite}
+.falling-leaves{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.falling-leaves i{position:absolute;top:-18px;left:var(--leaf-left);width:10px;height:15px;border-radius:10px 2px 10px 2px;background:#b5793d;opacity:0;transform:rotate(35deg);animation:leafFall 7s linear var(--leaf-delay) infinite}
+.falling-leaves i:nth-child(3n){width:7px;height:11px;background:#d29a4e}.falling-leaves i:nth-child(4n){background:#8d6639}
 .tree-canvas{position:relative;z-index:1}
-.person-card{background:#fff8e9;border-color:#d7bb91;color:#674e38;box-shadow:0 10px 26px #8f684033;transform:rotate(-.6deg);animation:cardBreeze 7s ease-in-out infinite}
+.person-card{background:#fff8e9eF;border-color:#c39b68;color:#674e38;box-shadow:0 8px 20px #7653383d;transform:rotate(-.6deg);animation:cardBreeze 7s ease-in-out infinite}
 .person-card:nth-child(even){transform:rotate(.7deg);animation-delay:-2.4s}
 .person-card:hover,.person-card.selected{background:#fffdf5;border-color:#b7894d;box-shadow:0 13px 28px #76533842}
 .person-card strong{color:#63492f}.person-card small{color:#94785a}.avatar{background:#ead6b6;color:#795b38}.partner-link{color:#ae7b3f}.connector,.root-couple:after,.children-row:before,.children-row .person-card:before,.children-row .add-card:before{background-color:#b48a54;border-color:#b48a54}.branch-label{color:#94785a}.branch-label i{background:#d1b88f}.add-card,.add-spouse-card{background:#fff7e7;border-color:#cbaa78;color:#7a5d3c}.add-card:hover,.add-spouse-card:hover{background:#fff1d2;border-color:#ae7b3f}.zoom-tools{background:#fffaf0;border-color:#d8c09d;box-shadow:0 5px 18px #76533826}.zoom-tools button{background:#f0dfbf;color:#805f35}.zoom-tools span{color:#94785a}.stage-note{color:#94785a}.line-dot{background:#b48a54}:root,body,.app-shell{background:#fff}
@@ -12,4 +15,5 @@
 @keyframes shadowDrift{0%,100%{transform:translateX(-8%) skewX(-12deg);opacity:.55}50%{transform:translateX(8%) skewX(-12deg);opacity:.3}}
 @keyframes treeBreeze{0%,100%{transform:rotate(-.35deg) scale(1.01)}50%{transform:rotate(.35deg) scale(1.015)}}
 @keyframes cardBreeze{0%,100%{translate:0 0}50%{translate:0 -2px}}
+@keyframes leafFall{0%{translate:0 -24px;rotate:0deg;opacity:0}12%{opacity:.9}55%{translate:var(--leaf-drift) 46vh;rotate:145deg;opacity:.8}100%{translate:calc(var(--leaf-drift) * -1) 96vh;rotate:290deg;opacity:0}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
