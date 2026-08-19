@@ -33,16 +33,27 @@ function useAmbientSound() {
   return { playing, track, toggle }
 }
 
+function getSavedPeople() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('roots-tree') || 'null')
+    return saved && typeof saved === 'object' ? saved : initialPeople
+  } catch {
+    return initialPeople
+  }
+}
+
 function App() {
-  const [people, setPeople] = useState(() => JSON.parse(localStorage.getItem('roots-tree') || 'null') || initialPeople)
+  const [people, setPeople] = useState(getSavedPeople)
   const [selectedId, setSelectedId] = useState('arthur')
   const [modal, setModal] = useState(null)
   const [deleteMode, setDeleteMode] = useState(false)
   const [code, setCode] = useState('')
   const sound = useAmbientSound()
-  const selected = people[selectedId]
+  const selected = people[selectedId] || people.arthur || Object.values(people)[0]
   const children = selected.children.map((id) => people[id]).filter(Boolean)
-  useEffect(() => localStorage.setItem('roots-tree', JSON.stringify(people)), [people])
+  useEffect(() => {
+    try { localStorage.setItem('roots-tree', JSON.stringify(people)) } catch { /* local persistence is optional */ }
+  }, [people])
   const updatePerson = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const id = modal === 'edit' ? selectedId : crypto.randomUUID(); const person = { id, name: form.get('name'), role: form.get('role'), birth: form.get('birth'), location: form.get('location'), note: form.get('note'), partnerId: null, children: [], parentId: selectedId }; setPeople((current) => { const next = { ...current, [id]: person, [selectedId]: { ...current[selectedId], children: [...current[selectedId].children, id] } }; return next }); setModal(null); }
   const deletePerson = () => { if (code !== '8123') return; setPeople((current) => { const next = { ...current }; delete next[selectedId]; Object.values(next).forEach((person) => { person.children = person.children.filter((id) => id !== selectedId) }); return next }); setSelectedId('arthur'); setDeleteMode(false); setCode('') }
   return <main className="app-shell">
