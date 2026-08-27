@@ -98,7 +98,8 @@ function PersonCard({ person, selectedId, onSelect }) { return <button className
 function FamilyTreeLevel({ ids, people, selectedId, onSelect, addId, onAdd }) {
   const members = ids.map((id) => people[id]).filter(Boolean)
   if (!members.length) return <div className="family-tree-level"><button className="add-card" onClick={onAdd}><span>＋</span><strong>Add first child</strong><small>Continue the story</small></button></div>
-  return <div className="family-tree-level">{members.map((person) => <div className="family-node" key={person.id}><PersonCard person={person} selectedId={selectedId} onSelect={onSelect} />{person.children.length > 0 && <FamilyTreeLevel ids={person.children} people={people} selectedId={selectedId} onSelect={onSelect} addId={addId} onAdd={onAdd} />}{person.id === addId && <button className="add-card branch-add-card" onClick={onAdd}><span>＋</span><strong>Add a child</strong><small>Continue the story</small></button>}</div>)}</div>
+  const nextIds = [...new Set(members.flatMap((person) => person.children))]
+  return <div className="family-tree-level"><div className="family-sibling-row">{members.map((person) => <div className="family-node" key={person.id}><PersonCard person={person} selectedId={selectedId} onSelect={onSelect} />{person.id === addId && <button className="add-card branch-add-card" onClick={onAdd}><span>＋</span><strong>Add a child</strong><small>Continue the story</small></button>}</div>)}</div>{nextIds.length > 0 && <FamilyTreeLevel ids={nextIds} people={people} selectedId={selectedId} onSelect={onSelect} addId={addId} onAdd={onAdd} />}</div>
 }
 
 export default App
