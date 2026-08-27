@@ -22,7 +22,7 @@ function useAmbientSound() {
 
 function getSavedPeople() {
   try {
-    const saved = JSON.parse(localStorage.getItem('roots-tree-v2') || 'null')
+    const saved = JSON.parse(localStorage.getItem('roots-tree-v3') || 'null')
     if (!saved || typeof saved !== 'object') return initialPeople
     const normalized = Object.fromEntries(Object.entries(saved).map(([id, person]) => [id, normalizePerson(person, id)]))
     return Object.keys(normalized).length ? normalized : initialPeople
@@ -51,7 +51,7 @@ function App() {
   const partner = selected.partnerId ? people[selected.partnerId] : null
   const children = selected.children.map((id) => people[id]).filter(Boolean)
   useEffect(() => {
-    try { localStorage.setItem('roots-tree-v2', JSON.stringify(people)) } catch { /* local persistence is optional */ }
+    try { localStorage.setItem('roots-tree-v3', JSON.stringify(people)) } catch { /* local persistence is optional */ }
   }, [people])
   const updatePerson = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const id = modal === 'edit' ? selectedId : (globalThis.crypto?.randomUUID?.() || `person-${Date.now()}`); const person = normalizePerson({ id, name: form.get('name'), role: form.get('role'), birth: form.get('birth'), location: form.get('location'), note: form.get('note'), partnerId: modal === 'spouse' ? selectedId : (people[id]?.partnerId || null), children: [], parentId: modal === 'spouse' ? null : selectedId }, id); setPeople((current) => { const next = { ...current, [id]: person }; const parent = current[selectedId] || initialPeople.you; if (modal === 'spouse') next[selectedId] = { ...parent, partnerId: id }; else if (modal === 'add') next[selectedId] = { ...parent, children: [...(parent.children || []), id] }; return next }); setSelectedId(id); setModal(null); }
   const requestEdit = (action, requiresCode = true) => { if (!requiresCode || editorUnlocked) action(); else { setPendingAction(() => action); setAuthOpen(true) } }
