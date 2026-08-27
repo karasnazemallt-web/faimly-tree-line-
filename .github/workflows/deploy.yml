@@ -27,8 +27,12 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      - name: Restore Vite source entry
+        run: cp index.template.html index.html
       - name: Build
         run: npm run build
+      - name: Publish legacy Pages files
+        run: cp dist/index.html index.html && cp dist/assets/* assets/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
