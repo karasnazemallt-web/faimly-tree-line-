@@ -52,6 +52,8 @@ function App() {
   const [zoom, setZoom] = useState(1)
   const sound = useAmbientSound()
   const selected = people[selectedId] || people.arthur || Object.values(people)[0] || initialPeople.you
+  const rootPerson = people.arthur || selected
+  const rootPartner = rootPerson.partnerId ? people[rootPerson.partnerId] : null
   const partner = selected.partnerId ? people[selected.partnerId] : null
   const children = selected.children.map((id) => people[id]).filter(Boolean)
   const generation = selected.parentId ? (people[selected.parentId]?.parentId ? 2 : 1) : 0
@@ -75,7 +77,7 @@ function App() {
       <div className={`tree-stage generation-${generation}`}>
         <div className="stage-note"><span className="line-dot" /> Click any person to explore their branch</div><div className="zoom-tools"><button onClick={() => setZoom((value) => Math.max(.7, value - .1))} aria-label="Zoom out">−</button><span>{Math.round(zoom * 100)}%</span><button onClick={() => setZoom((value) => Math.min(1.5, value + .1))} aria-label="Zoom in">＋</button><button onClick={() => setZoom(1)} aria-label="Reset zoom">↺</button></div>
         <div className="tree-return"><button onClick={() => setSelectedId('arthur')} disabled={selectedId === 'arthur'}>↶ Return to roots</button></div><div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
-          <div className="root-couple"><PersonCard person={selected} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{partner ? <PersonCard person={partner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'), false)}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
+          <div className="root-couple"><PersonCard person={rootPerson} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{rootPartner ? <PersonCard person={rootPartner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'), false)}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
           <div className="connector" />
           <div className="branch-label"><span>THEIR CHILDREN</span><i /> <em>{children.length} {children.length === 1 ? 'child' : 'children'}</em><button className="branch-add" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add person</button></div>
           <div className="children-row">{children.map((person) => <PersonCard key={person.id} person={person} selectedId={selectedId} onSelect={setSelectedId} />)}<button className="add-card" onClick={() => requestEdit(() => setModal('add'), false)}><span>＋</span><strong>{children.length ? 'Add a child' : 'Add first child'}</strong><small>Continue the story</small></button></div>
