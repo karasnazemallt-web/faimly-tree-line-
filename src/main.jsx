@@ -23,7 +23,7 @@ function useAmbientSound() {
 function getSavedPeople() {
   try {
     const saved = JSON.parse(localStorage.getItem('roots-tree-v2') || 'null')
-    return saved && typeof saved === 'object' ? saved : initialPeople
+    return saved && typeof saved === 'object' && Object.keys(saved).length ? saved : initialPeople
   } catch {
     return initialPeople
   }
@@ -41,7 +41,7 @@ function App() {
   const [pendingAction, setPendingAction] = useState(null)
   const [zoom, setZoom] = useState(1)
   const sound = useAmbientSound()
-  const selected = people[selectedId] || people.arthur || Object.values(people)[0]
+  const selected = people[selectedId] || people.arthur || Object.values(people)[0] || initialPeople.you
   const partner = selected.partnerId ? people[selected.partnerId] : null
   const children = selected.children.map((id) => people[id]).filter(Boolean)
   useEffect(() => {
