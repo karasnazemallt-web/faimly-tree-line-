@@ -31,3 +31,8 @@
 .person-card,.add-card,.add-spouse-card{background-color:#b83e43;background-image:linear-gradient(rgba(74,0,4,.12),rgba(74,0,4,.26)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover;background-blend-mode:multiply}
 .person-card::after,.add-card::after,.add-spouse-card::after{display:none}
 .person-card:hover,.person-card.selected,.add-card:hover,.add-spouse-card:hover{background-color:#c74c50;background-image:linear-gradient(rgba(74,0,4,.04),rgba(74,0,4,.18)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover;background-blend-mode:multiply}
+.person-card,.add-card,.add-spouse-card{width:112px;min-height:140px;aspect-ratio:.8/1;background-color:transparent;background-image:url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:contain;background-repeat:no-repeat;background-blend-mode:normal;border:0;box-shadow:none;mix-blend-mode:multiply}
+.person-card{padding:58px 12px 15px;gap:3px}
+.person-card .avatar{display:none}
+.person-card strong,.person-card small,.add-card strong,.add-card small{color:#fff;text-shadow:0 1px 3px #3d1616}
+.person-card:hover,.person-card.selected,.add-card:hover,.add-spouse-card:hover{background-color:transparent;background-image:url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:contain;background-repeat:no-repeat;box-shadow:0 8px 18px #76533822}
