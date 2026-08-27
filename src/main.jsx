@@ -23,10 +23,16 @@ function useAmbientSound() {
 function getSavedPeople() {
   try {
     const saved = JSON.parse(localStorage.getItem('roots-tree-v2') || 'null')
-    return saved && typeof saved === 'object' && Object.keys(saved).length ? saved : initialPeople
+    if (!saved || typeof saved !== 'object') return initialPeople
+    const normalized = Object.fromEntries(Object.entries(saved).map(([id, person]) => [id, normalizePerson(person, id)]))
+    return Object.keys(normalized).length ? normalized : initialPeople
   } catch {
     return initialPeople
   }
+}
+
+function normalizePerson(person, id) {
+  return { ...person, id, name: person?.name || 'Unnamed family member', role: person?.role || 'Family member', birth: person?.birth || 'Unknown', location: person?.location || 'Unknown', note: person?.note || 'Part of the family story.', partnerId: person?.partnerId || null, children: Array.isArray(person?.children) ? person.children : [], parentId: person?.parentId || null }
 }
 
 function App() {
@@ -47,7 +53,7 @@ function App() {
   useEffect(() => {
     try { localStorage.setItem('roots-tree-v2', JSON.stringify(people)) } catch { /* local persistence is optional */ }
   }, [people])
-  const updatePerson = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const id = modal === 'edit' ? selectedId : crypto.randomUUID(); const person = { id, name: form.get('name'), role: form.get('role'), birth: form.get('birth'), location: form.get('location'), note: form.get('note'), partnerId: modal === 'spouse' ? selectedId : (people[id]?.partnerId || null), children: [], parentId: modal === 'spouse' ? null : selectedId }; setPeople((current) => { const next = { ...current, [id]: person }; if (modal === 'spouse') next[selectedId] = { ...current[selectedId], partnerId: id }; else if (modal === 'add') next[selectedId] = { ...current[selectedId], children: [...current[selectedId].children, id] }; return next }); setModal(null); }
+  const updatePerson = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const id = modal === 'edit' ? selectedId : (crypto.randomUUID?.() || `person-${Date.now()}`); const person = normalizePerson({ id, name: form.get('name'), role: form.get('role'), birth: form.get('birth'), location: form.get('location'), note: form.get('note'), partnerId: modal === 'spouse' ? selectedId : (people[id]?.partnerId || null), children: [], parentId: modal === 'spouse' ? null : selectedId }, id); setPeople((current) => { const next = { ...current, [id]: person }; if (modal === 'spouse') next[selectedId] = { ...current[selectedId], partnerId: id }; else if (modal === 'add') next[selectedId] = { ...current[selectedId], children: [...(current[selectedId].children || []), id] }; return next }); setSelectedId(id); setModal(null); }
   const requestEdit = (action, requiresCode = true) => { if (!requiresCode || editorUnlocked) action(); else { setPendingAction(() => action); setAuthOpen(true) } }
   const authorizeEdit = (event) => { event.preventDefault(); if (code !== '6767') return; setEditorUnlocked(true); setAuthOpen(false); setCode(''); pendingAction?.(); setPendingAction(null) }
   const deletePerson = () => { if (code !== '6767') { setDeleteError('That code was not accepted.'); return } if (Object.keys(people).length <= 1) { setDeleteError('Keep at least one profile in the archive.'); return } setPeople((current) => { const next = { ...current }; const removed = next[selectedId]; delete next[selectedId]; Object.values(next).forEach((person) => { person.children = person.children.filter((id) => id !== selectedId); if (person.partnerId === selectedId) person.partnerId = removed?.partnerId || null }); return next }); setSelectedId(Object.keys(people).find((id) => id !== selectedId) || 'you'); setDeleteMode(false); setDeleteError(''); setCode('') }
