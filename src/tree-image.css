@@ -2,7 +2,7 @@
 .tree-stage:before{display:none}
 .tree-stage:after{content:'';position:absolute;inset:0;background:#17351d26;z-index:0;pointer-events:none}
 .tree-canvas{position:relative;z-index:3}
-.children-row{flex-wrap:wrap;justify-content:center;row-gap:32px;max-width:980px;margin-inline:auto}
+.children-row{flex-wrap:wrap;justify-content:center;row-gap:32px;max-width:1200px;margin-inline:auto}
 .person-card{background:linear-gradient(135deg,rgba(255,253,245,.9),rgba(255,253,245,.88)),url('https://i.pinimg.com/originals/bf/36/89/bf368964fd025b10d5574b188919d57e.jpg') center/120%;border:1px solid #c39b68;border-radius:18px 5px 18px 5px;color:#674e38;box-shadow:0 8px 20px #7653383d;transform:rotate(-.6deg)}
 .person-card{width:150px;min-height:150px;aspect-ratio:1/1;justify-content:center;flex-direction:column;gap:7px;text-align:center;padding:27px 17px 19px;border-radius:48% 48% 46% 46% / 38% 38% 55% 55%;overflow:visible;background:radial-gradient(circle at 32% 27%,#f5a19a 0 4%,transparent 22%),linear-gradient(145deg,#d95a52,#ae363d);border-color:#8f2e35;color:#fff7ee;box-shadow:0 10px 24px #76533855}
 .person-card::after{content:'';position:absolute;top:-10px;left:50%;width:5px;height:16px;border-radius:4px;background:#60432c;transform:translateX(-35%) rotate(12deg);z-index:2}
