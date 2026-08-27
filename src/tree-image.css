@@ -16,7 +16,7 @@
 .person-card:hover,.person-card.selected{background:#fffdf5;border-color:#b7894d;box-shadow:0 13px 28px #76533842}
 .person-card strong{color:#63492f}.person-card small{color:#94785a}.avatar{background:#ead6b6;color:#795b38}.partner-link{color:#ae7b3f}.connector,.root-couple:after,.children-row:before,.children-row .person-card:before,.children-row .add-card:before{background-color:#b48a54;border-color:#b48a54}.branch-label{color:#94785a}.branch-label i{background:#d1b88f}.add-card,.add-spouse-card{background:#fff7e7;border-color:#cbaa78;color:#7a5d3c}.add-card:hover,.add-spouse-card:hover{background:#fff1d2;border-color:#ae7b3f}.zoom-tools{background:#fffaf0;border-color:#d8c09d;box-shadow:0 5px 18px #76533826}.zoom-tools button{background:#f0dfbf;color:#805f35}.zoom-tools span{color:#94785a}.stage-note{color:#94785a}.line-dot{background:#b48a54}:root,body,.app-shell{background:#fff}
 *,*::before,*::after{animation:none!important;transition:none!important}
-.person-card,.add-card,.add-spouse-card{width:112px;min-height:112px;aspect-ratio:1/1;box-sizing:border-box;border-radius:48% 48% 46% 46% / 38% 38% 55% 55%;overflow:visible;background:radial-gradient(circle at 32% 27%,#f5a19a 0 4%,transparent 22%),linear-gradient(145deg,#d95a52,#ae363d);border:1px solid #8f2e35;color:#fff7ee;box-shadow:0 8px 18px #76533855}
+.person-card,.add-card,.add-spouse-card{width:112px;min-height:126px;aspect-ratio:.89/1;box-sizing:border-box;border-radius:48% 48% 46% 46% / 38% 38% 55% 55%;overflow:visible;background:radial-gradient(circle at 32% 27%,#f5a19a 0 4%,transparent 22%),linear-gradient(145deg,#d95a52,#ae363d);border:1px solid #8f2e35;color:#fff7ee;box-shadow:0 8px 18px #76533855}
 .person-card{justify-content:center;flex-direction:column;gap:5px;text-align:center;padding:22px 12px 14px}
 .person-card::after,.add-card::after,.add-spouse-card::after{content:'';position:absolute;top:-10px;left:50%;width:5px;height:16px;border-radius:4px;background:#60432c;transform:translateX(-35%) rotate(12deg);z-index:2}
 .person-card strong,.person-card small{position:relative;z-index:1;color:#fffaf2}
@@ -28,6 +28,6 @@
 .add-card span,.add-spouse-card span{float:none;color:#ffe0cf;font-size:22px}
 .add-card strong,.add-spouse-card strong{font-size:11px;color:#fffaf2}
 .add-card small,.add-spouse-card small{margin-top:0;color:#ffe0cf}
-.person-card,.add-card,.add-spouse-card{background-image:linear-gradient(rgba(74,0,4,.2),rgba(74,0,4,.34)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover}
+.person-card,.add-card,.add-spouse-card{background-color:#b83e43;background-image:linear-gradient(rgba(74,0,4,.12),rgba(74,0,4,.26)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover;background-blend-mode:multiply}
 .person-card::after,.add-card::after,.add-spouse-card::after{display:none}
-.person-card:hover,.person-card.selected,.add-card:hover,.add-spouse-card:hover{background-image:linear-gradient(rgba(74,0,4,.08),rgba(74,0,4,.24)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover}
+.person-card:hover,.person-card.selected,.add-card:hover,.add-spouse-card:hover{background-color:#c74c50;background-image:linear-gradient(rgba(74,0,4,.04),rgba(74,0,4,.18)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover;background-blend-mode:multiply}
