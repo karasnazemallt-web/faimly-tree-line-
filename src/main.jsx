@@ -56,15 +56,6 @@ function App() {
   const rootPartner = rootPerson.partnerId ? people[rootPerson.partnerId] : null
   const partner = selected.partnerId ? people[selected.partnerId] : null
   const children = selected.children.map((id) => people[id]).filter(Boolean)
-  const lineage = []
-  let ancestorId = selected.parentId
-  while (ancestorId && ancestorId !== rootPerson.id) {
-    const ancestor = people[ancestorId]
-    if (!ancestor) break
-    lineage.unshift(ancestor)
-    ancestorId = ancestor.parentId
-  }
-  if (selected.id !== rootPerson.id && !lineage.some((person) => person.id === selected.id)) lineage.push(selected)
   const generation = selected.parentId ? (people[selected.parentId]?.parentId ? 2 : 1) : 0
   useEffect(() => {
     try { localStorage.setItem('roots-tree-v4', JSON.stringify(people)) } catch { /* local persistence is optional */ }
@@ -88,9 +79,8 @@ function App() {
         <div className="tree-return"><button onClick={() => setSelectedId('arthur')} disabled={selectedId === 'arthur'}>↶ Return to roots</button></div><div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
           <div className="root-couple"><PersonCard person={rootPerson} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{rootPartner ? <PersonCard person={rootPartner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'), false)}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
           <div className="connector" />
-          {lineage.length > 0 && <div className="lineage-row">{lineage.map((person) => <PersonCard key={person.id} person={person} selectedId={selectedId} onSelect={setSelectedId} />)}</div>}
-          <div className="branch-label"><span>CHILDREN OF {selected.name.toUpperCase()}</span><i /> <em>{children.length} {children.length === 1 ? 'child' : 'children'}</em><button className="branch-add" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add person</button></div>
-          <div className="children-row">{children.map((person) => <PersonCard key={person.id} person={person} selectedId={selectedId} onSelect={setSelectedId} />)}<button className="add-card" onClick={() => requestEdit(() => setModal('add'), false)}><span>＋</span><strong>{children.length ? 'Add a child' : 'Add first child'}</strong><small>Continue the story</small></button></div>
+          <div className="branch-label"><span>THEIR CHILDREN</span><i /> <em>{rootPerson.children.length} {rootPerson.children.length === 1 ? 'child' : 'children'}</em><button className="branch-add" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add person</button></div>
+          <FamilyTreeLevel ids={rootPerson.children} people={people} selectedId={selectedId} onSelect={setSelectedId} addId={selectedId} onAdd={() => requestEdit(() => setModal('add'), false)} />
         </div>
       </div>
       <footer className="workspace-footer"><span>Last saved just now</span><span>Private archive · Only you can edit</span><span>Made by Karas Nazmy</span></footer>
@@ -104,5 +94,11 @@ function App() {
 createRoot(document.getElementById('root')).render(<App />)
 
 function PersonCard({ person, selectedId, onSelect }) { return <button className={`person-card person-${person.id} ${selectedId === person.id ? 'selected' : ''}`} onClick={() => onSelect(person.id)}><div className="avatar">{person.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</div><div><strong>{person.name}</strong><small>{person.role}</small></div><span className="card-arrow">↗</span></button> }
+
+function FamilyTreeLevel({ ids, people, selectedId, onSelect, addId, onAdd }) {
+  const members = ids.map((id) => people[id]).filter(Boolean)
+  if (!members.length) return <div className="family-tree-level"><button className="add-card" onClick={onAdd}><span>＋</span><strong>Add first child</strong><small>Continue the story</small></button></div>
+  return <div className="family-tree-level">{members.map((person) => <div className="family-node" key={person.id}><PersonCard person={person} selectedId={selectedId} onSelect={onSelect} />{person.children.length > 0 && <FamilyTreeLevel ids={person.children} people={people} selectedId={selectedId} onSelect={onSelect} addId={addId} onAdd={onAdd} />}{person.id === addId && <button className="add-card branch-add-card" onClick={onAdd}><span>＋</span><strong>Add a child</strong><small>Continue the story</small></button>}</div>)}</div>
+}
 
 export default App
