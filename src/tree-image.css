@@ -33,6 +33,7 @@
 .branch-label{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .branch-add{border:1px solid #9fbea5;border-radius:5px;background:#f7fbf7;color:#577a63;padding:6px 10px;font:10px 'DM Mono';cursor:pointer}
 .branch-add:hover{background:#edf7ee;border-color:#6d9d74}
+.branch-label span{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .person-card,.add-card,.add-spouse-card{background-color:#b83e43;background-image:linear-gradient(rgba(74,0,4,.12),rgba(74,0,4,.26)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover;background-blend-mode:multiply}
 .person-card::after,.add-card::after,.add-spouse-card::after{display:none}
 .person-card:hover,.person-card.selected,.add-card:hover,.add-spouse-card:hover{background-color:#c74c50;background-image:linear-gradient(rgba(74,0,4,.04),rgba(74,0,4,.18)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover;background-blend-mode:multiply}
