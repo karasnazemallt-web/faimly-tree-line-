@@ -7,7 +7,11 @@ import './light-theme.css'
 import './tree-image.css'
 
 const initialPeople = {
-  you: { id: 'you', name: 'Your name', role: 'You', birth: '2000', location: 'Your hometown', note: 'The next chapter starts here.', partnerId: null, children: [], parentId: null },
+  arthur: { id: 'arthur', name: 'Arthur Whitmore', role: 'Grand-grandfather', birth: '1921', location: 'Bristol, UK', note: 'The root of your story.', partnerId: 'elise', children: ['thomas', 'michael'], parentId: null },
+  elise: { id: 'elise', name: 'Elise Whitmore', role: 'Grand-grandmother', birth: '1925', location: 'Bristol, UK', note: 'A keeper of old stories.', partnerId: 'arthur', children: [], parentId: null },
+  thomas: { id: 'thomas', name: 'Thomas Whitmore', role: 'Son', birth: '1951', location: 'London, UK', note: 'Built a life by the sea.', partnerId: null, children: ['you'], parentId: 'arthur' },
+  michael: { id: 'michael', name: 'Michael Whitmore', role: 'Son', birth: '1954', location: 'Bath, UK', note: 'Always brought everyone together.', partnerId: null, children: [], parentId: 'arthur' },
+  you: { id: 'you', name: 'Your name', role: 'You', birth: '2000', location: 'Your hometown', note: 'The next chapter starts here.', partnerId: null, children: [], parentId: 'thomas' },
 }
 
 function useAmbientSound() {
@@ -22,7 +26,7 @@ function useAmbientSound() {
 
 function getSavedPeople() {
   try {
-    const saved = JSON.parse(localStorage.getItem('roots-tree-v3') || 'null')
+    const saved = JSON.parse(localStorage.getItem('roots-tree-v4') || 'null')
     if (!saved || typeof saved !== 'object') return initialPeople
     const normalized = Object.fromEntries(Object.entries(saved).map(([id, person]) => [id, normalizePerson(person, id)]))
     return Object.keys(normalized).length ? normalized : initialPeople
@@ -50,8 +54,9 @@ function App() {
   const selected = people[selectedId] || people.arthur || Object.values(people)[0] || initialPeople.you
   const partner = selected.partnerId ? people[selected.partnerId] : null
   const children = selected.children.map((id) => people[id]).filter(Boolean)
+  const generation = selected.parentId ? (people[selected.parentId]?.parentId ? 2 : 1) : 0
   useEffect(() => {
-    try { localStorage.setItem('roots-tree-v3', JSON.stringify(people)) } catch { /* local persistence is optional */ }
+    try { localStorage.setItem('roots-tree-v4', JSON.stringify(people)) } catch { /* local persistence is optional */ }
   }, [people])
   const updatePerson = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const id = modal === 'edit' ? selectedId : (globalThis.crypto?.randomUUID?.() || `person-${Date.now()}`); const person = normalizePerson({ id, name: form.get('name'), role: form.get('role'), birth: form.get('birth'), location: form.get('location'), note: form.get('note'), partnerId: modal === 'spouse' ? selectedId : (people[id]?.partnerId || null), children: [], parentId: modal === 'spouse' ? null : selectedId }, id); setPeople((current) => { const next = { ...current, [id]: person }; const parent = current[selectedId] || initialPeople.you; if (modal === 'spouse') next[selectedId] = { ...parent, partnerId: id }; else if (modal === 'add') next[selectedId] = { ...parent, children: [...(parent.children || []), id] }; return next }); if (modal !== 'add') setSelectedId(id); setModal(null); }
   const requestEdit = (action, requiresCode = true) => { if (!requiresCode || editorUnlocked) action(); else { setPendingAction(() => action); setAuthOpen(true) } }
@@ -67,9 +72,9 @@ function App() {
     </aside>
     <section className="workspace">
       <header className="topbar"><div><p className="eyebrow">FAMILY TREE / OVERVIEW</p><h1>Where your story begins.</h1></div><div className="top-actions"><button className="ghost-btn" onClick={() => requestEdit(() => setModal('edit'))}>Edit selected <span>🔒</span></button><button className="primary-btn" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add family member</button></div></header>
-      <div className="tree-stage">
+      <div className={`tree-stage generation-${generation}`}>
         <div className="stage-note"><span className="line-dot" /> Click any person to explore their branch</div><div className="zoom-tools"><button onClick={() => setZoom((value) => Math.max(.7, value - .1))} aria-label="Zoom out">−</button><span>{Math.round(zoom * 100)}%</span><button onClick={() => setZoom((value) => Math.min(1.5, value + .1))} aria-label="Zoom in">＋</button><button onClick={() => setZoom(1)} aria-label="Reset zoom">↺</button></div>
-        <div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
+        <div className="tree-return"><button onClick={() => setSelectedId('arthur')} disabled={selectedId === 'arthur'}>↶ Return to roots</button></div><div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
           <div className="root-couple"><PersonCard person={selected} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{partner ? <PersonCard person={partner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'), false)}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
           <div className="connector" />
           <div className="branch-label"><span>THEIR CHILDREN</span><i /> <em>{children.length} {children.length === 1 ? 'child' : 'children'}</em><button className="branch-add" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add person</button></div>
