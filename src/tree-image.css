@@ -28,3 +28,6 @@
 .add-card span,.add-spouse-card span{float:none;color:#ffe0cf;font-size:22px}
 .add-card strong,.add-spouse-card strong{font-size:11px;color:#fffaf2}
 .add-card small,.add-spouse-card small{margin-top:0;color:#ffe0cf}
+.person-card,.add-card,.add-spouse-card{background-image:linear-gradient(rgba(74,0,4,.2),rgba(74,0,4,.34)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover}
+.person-card::after,.add-card::after,.add-spouse-card::after{display:none}
+.person-card:hover,.person-card.selected,.add-card:hover,.add-spouse-card:hover{background-image:linear-gradient(rgba(74,0,4,.08),rgba(74,0,4,.24)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover}
