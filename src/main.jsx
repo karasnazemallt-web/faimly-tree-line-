@@ -72,7 +72,7 @@ function App() {
         <div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
           <div className="root-couple"><PersonCard person={selected} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{partner ? <PersonCard person={partner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'), false)}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
           <div className="connector" />
-          <div className="branch-label"><span>THEIR CHILDREN</span><i /> <em>{children.length} {children.length === 1 ? 'child' : 'children'}</em></div>
+          <div className="branch-label"><span>THEIR CHILDREN</span><i /> <em>{children.length} {children.length === 1 ? 'child' : 'children'}</em><button className="branch-add" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add person</button></div>
           <div className="children-row">{children.map((person) => <PersonCard key={person.id} person={person} selectedId={selectedId} onSelect={setSelectedId} />)}<button className="add-card" onClick={() => requestEdit(() => setModal('add'), false)}><span>＋</span><strong>{children.length ? 'Add a child' : 'Add first child'}</strong><small>Continue the story</small></button></div>
         </div>
       </div>
