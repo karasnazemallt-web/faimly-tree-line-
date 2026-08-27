@@ -56,6 +56,15 @@ function App() {
   const rootPartner = rootPerson.partnerId ? people[rootPerson.partnerId] : null
   const partner = selected.partnerId ? people[selected.partnerId] : null
   const children = selected.children.map((id) => people[id]).filter(Boolean)
+  const lineage = []
+  let ancestorId = selected.parentId
+  while (ancestorId && ancestorId !== rootPerson.id) {
+    const ancestor = people[ancestorId]
+    if (!ancestor) break
+    lineage.unshift(ancestor)
+    ancestorId = ancestor.parentId
+  }
+  if (selected.id !== rootPerson.id && !lineage.some((person) => person.id === selected.id)) lineage.push(selected)
   const generation = selected.parentId ? (people[selected.parentId]?.parentId ? 2 : 1) : 0
   useEffect(() => {
     try { localStorage.setItem('roots-tree-v4', JSON.stringify(people)) } catch { /* local persistence is optional */ }
@@ -79,6 +88,7 @@ function App() {
         <div className="tree-return"><button onClick={() => setSelectedId('arthur')} disabled={selectedId === 'arthur'}>↶ Return to roots</button></div><div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
           <div className="root-couple"><PersonCard person={rootPerson} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{rootPartner ? <PersonCard person={rootPartner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'), false)}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
           <div className="connector" />
+          {lineage.length > 0 && <div className="lineage-row">{lineage.map((person) => <PersonCard key={person.id} person={person} selectedId={selectedId} onSelect={setSelectedId} />)}</div>}
           <div className="branch-label"><span>CHILDREN OF {selected.name.toUpperCase()}</span><i /> <em>{children.length} {children.length === 1 ? 'child' : 'children'}</em><button className="branch-add" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add person</button></div>
           <div className="children-row">{children.map((person) => <PersonCard key={person.id} person={person} selectedId={selectedId} onSelect={setSelectedId} />)}<button className="add-card" onClick={() => requestEdit(() => setModal('add'), false)}><span>＋</span><strong>{children.length ? 'Add a child' : 'Add first child'}</strong><small>Continue the story</small></button></div>
         </div>
