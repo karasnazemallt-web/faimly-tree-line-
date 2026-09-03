@@ -29,7 +29,6 @@
 .add-card strong,.add-spouse-card strong{font-size:11px;color:#fffaf2}
 .add-card small,.add-spouse-card small{margin-top:0;color:#ffe0cf}
 .tree-canvas{padding:125px 20px 34px}
-.canopy-people{display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));justify-items:center;gap:4px;max-width:760px;margin:14px auto 0;padding:0 4%;}
 .tree-return{position:absolute;top:14px;left:18px;z-index:4}.tree-return button{border:1px solid #9fbea5;border-radius:5px;background:#f7fbf7;color:#577a63;padding:7px 10px;font:10px 'DM Mono';cursor:pointer}.tree-return button:disabled{opacity:.45;cursor:default}
 .branch-label{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .branch-add{border:1px solid #9fbea5;border-radius:5px;background:#f7fbf7;color:#577a63;padding:6px 10px;font:10px 'DM Mono';cursor:pointer}

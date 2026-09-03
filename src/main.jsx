@@ -39,10 +39,6 @@ function normalizePerson(person, id) {
   return { ...person, id, name: person?.name || 'Unnamed family member', role: person?.role || 'Family member', birth: person?.birth || 'Unknown', location: person?.location || 'Unknown', note: person?.note || 'Part of the family story.', partnerId: person?.partnerId || null, children: Array.isArray(person?.children) ? person.children : [], parentId: person?.parentId || null }
 }
 
-function getDescendantIds(person, people) {
-  return person.children.flatMap((id) => [id, ...getDescendantIds(people[id] || { children: [] }, people)])
-}
-
 function App() {
   const [people, setPeople] = useState(getSavedPeople)
   const [selectedId, setSelectedId] = useState('arthur')
@@ -85,7 +81,7 @@ function App() {
           <div className="root-couple"><PersonCard person={rootPerson} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{rootPartner ? <PersonCard person={rootPartner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'), false)}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
           <div className="connector" />
           <div className="branch-label"><span>THEIR CHILDREN</span><i /> <em>{rootPerson.children.length} {rootPerson.children.length === 1 ? 'child' : 'children'}</em><button className="branch-add" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add person</button></div>
-          <div className="canopy-people">{getDescendantIds(rootPerson, people).map((id) => <PersonCard key={id} person={people[id]} selectedId={selectedId} onSelect={setSelectedId} />)}</div>
+          <FamilyTreeLevel ids={rootPerson.children} people={people} selectedId={selectedId} onSelect={setSelectedId} addId={selectedId} onAdd={() => requestEdit(() => setModal('add'), false)} />
         </div>
       </div>
       <footer className="workspace-footer"><span>Last saved just now</span><span>Private archive · Only you can edit</span><span>Made by Karas Nazmy</span></footer>
