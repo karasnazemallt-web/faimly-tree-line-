@@ -94,7 +94,7 @@ function App() {
 
 createRoot(document.getElementById('root')).render(<App />)
 
-function PersonCard({ person, selectedId, onSelect }) { return <button className={`person-card person-${person.id} ${selectedId === person.id ? 'selected' : ''}`} onClick={() => onSelect(person.id)}><div className="avatar">{person.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</div><div><strong>{person.name}</strong><small>{person.role}</small></div><span className="card-arrow">↗</span></button> }
+function PersonCard({ person, selectedId, onSelect }) { return <button className={`person-card person-${person.id} ${selectedId === person.id ? 'selected' : ''}`} onClick={() => onSelect(person.id)}><div className="avatar">{person.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</div><div className="person-copy"><strong>{person.name}</strong><small>{person.role}</small></div><span className="card-arrow">↗</span></button> }
 
 function FamilyTreeLevel({ ids, people, selectedId, onSelect, addId, onAdd }) {
   const members = ids.map((id) => people[id]).filter(Boolean)
