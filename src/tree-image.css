@@ -2,6 +2,7 @@
 .tree-stage:before{display:none}
 .tree-stage:after{content:'';position:absolute;inset:0;background:#17351d26;z-index:0;pointer-events:none}
 .tree-canvas{position:relative;z-index:3;min-width:0;width:100%}
+.leaf-canopy{position:absolute;inset:28px 6% auto;height:300px;border-radius:46% 54% 42% 58%;background:radial-gradient(ellipse at 20% 48%,#567d42 0 18%,transparent 19%),radial-gradient(ellipse at 48% 25%,#6f9750 0 23%,transparent 24%),radial-gradient(ellipse at 78% 48%,#4e783c 0 20%,transparent 21%),radial-gradient(ellipse at 50% 72%,#3e6937 0 26%,transparent 27%);opacity:.7;z-index:0;pointer-events:none}
 .children-row{flex-wrap:wrap;justify-content:center;row-gap:32px;max-width:1200px;margin-inline:auto}
 .person-card{background:linear-gradient(135deg,rgba(255,253,245,.9),rgba(255,253,245,.88)),url('https://i.pinimg.com/originals/bf/36/89/bf368964fd025b10d5574b188919d57e.jpg') center/120%;border:1px solid #c39b68;border-radius:18px 5px 18px 5px;color:#674e38;box-shadow:0 8px 20px #7653383d;transform:rotate(-.6deg)}
 .person-card{width:150px;min-height:150px;aspect-ratio:1/1;justify-content:center;flex-direction:column;gap:7px;text-align:center;padding:27px 17px 19px;border-radius:48% 48% 46% 46% / 38% 38% 55% 55%;overflow:visible;background:radial-gradient(circle at 32% 27%,#f5a19a 0 4%,transparent 22%),linear-gradient(145deg,#d95a52,#ae363d);border-color:#8f2e35;color:#fff7ee;box-shadow:0 10px 24px #76533855}
@@ -48,6 +49,7 @@
 .person-card strong,.add-card strong{font-size:8px}
 .person-card small,.add-card small{font-size:7px}
 .root-couple,.family-sibling-row{gap:8px;flex-wrap:wrap}
+.root-couple,.connector,.branch-label,.family-tree-level{position:relative;z-index:1}
 .person-card:hover,.person-card.selected,.add-card:hover,.add-spouse-card:hover{background-color:transparent;background-image:url('./image.png');background-position:center;background-size:100% 100%;background-repeat:no-repeat;box-shadow:0 8px 18px #76533822}
 .zoom-tools{z-index:10}
 .person-card.selected{transform:scale(.86)}
