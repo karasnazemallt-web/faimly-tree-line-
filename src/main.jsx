@@ -14,27 +14,6 @@ const initialPeople = {
   you: { id: 'you', name: 'Your name', role: 'You', birth: '2000', location: 'Your hometown', note: 'The next chapter starts here.', partnerId: null, children: [], parentId: 'thomas' },
 }
 
-function createExpandedPeople() {
-  const people = Object.fromEntries(Object.entries(initialPeople).map(([id, person]) => [id, { ...person, children: [...person.children] }]))
-  const queue = Object.values(people).filter((person) => person.id !== 'elise' && !person.children.length)
-  let nextNumber = 1
-  while (Object.keys(people).length < 50) {
-    const parent = queue.shift()
-    if (!parent) break
-    const childCount = Math.min(2, 50 - Object.keys(people).length)
-    parent.children = []
-    for (let index = 0; index < childCount; index += 1) {
-      const id = `relative-${nextNumber}`
-      nextNumber += 1
-      const child = { id, name: `Family member ${nextNumber - 1}`, role: 'Family member', birth: `${1960 + (nextNumber % 45)}`, location: 'Family hometown', note: 'Part of the family story.', partnerId: null, children: [], parentId: parent.id }
-      people[id] = child
-      parent.children.push(id)
-      queue.push(child)
-    }
-  }
-  return people
-}
-
 function useAmbientSound() {
   const player = useRef(null)
   const [playing, setPlaying] = useState(false)
@@ -47,12 +26,12 @@ function useAmbientSound() {
 
 function getSavedPeople() {
   try {
-    const saved = JSON.parse(localStorage.getItem('roots-tree-v5') || 'null')
-    if (!saved || typeof saved !== 'object') return createExpandedPeople()
+     const saved = JSON.parse(localStorage.getItem('roots-tree-v6') || 'null')
+     if (!saved || typeof saved !== 'object') return initialPeople
     const normalized = Object.fromEntries(Object.entries(saved).map(([id, person]) => [id, normalizePerson(person, id)]))
-    return Object.keys(normalized).length >= 50 ? normalized : createExpandedPeople()
+     return Object.keys(normalized).length ? normalized : initialPeople
   } catch {
-    return createExpandedPeople()
+     return initialPeople
   }
 }
 
@@ -78,8 +57,9 @@ function App() {
   const partner = selected.partnerId ? people[selected.partnerId] : null
   const children = selected.children.map((id) => people[id]).filter(Boolean)
   const generation = selected.parentId ? (people[selected.parentId]?.parentId ? 2 : 1) : 0
+  const treeScale = Math.max(0.55, 1 - Math.max(0, Object.keys(people).length - 8) * 0.01)
   useEffect(() => {
-    try { localStorage.setItem('roots-tree-v5', JSON.stringify(people)) } catch { /* local persistence is optional */ }
+    try { localStorage.setItem('roots-tree-v6', JSON.stringify(people)) } catch { /* local persistence is optional */ }
   }, [people])
   const updatePerson = (event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const id = modal === 'edit' ? selectedId : (globalThis.crypto?.randomUUID?.() || `person-${Date.now()}`); const person = normalizePerson({ id, name: form.get('name'), role: form.get('role'), birth: form.get('birth'), location: form.get('location'), note: form.get('note'), partnerId: modal === 'spouse' ? selectedId : (people[id]?.partnerId || null), children: [], parentId: modal === 'spouse' ? null : selectedId }, id); setPeople((current) => { const next = { ...current, [id]: person }; const parent = current[selectedId] || initialPeople.you; if (modal === 'spouse') next[selectedId] = { ...parent, partnerId: id }; else if (modal === 'add') next[selectedId] = { ...parent, children: [...(parent.children || []), id] }; return next }); if (modal !== 'add') setSelectedId(id); setModal(null); }
   const requestEdit = (action, requiresCode = true) => { if (!requiresCode || editorUnlocked) action(); else { setPendingAction(() => action); setAuthOpen(true) } }
@@ -97,7 +77,7 @@ function App() {
       <header className="topbar"><div><p className="eyebrow">FAMILY TREE / OVERVIEW</p><h1>Where your story begins.</h1></div><div className="top-actions"><button className="ghost-btn" onClick={() => requestEdit(() => setModal('edit'))}>Edit selected <span>🔒</span></button><button className="primary-btn" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add family member</button></div></header>
       <div className={`tree-stage generation-${generation}`}>
         <div className="stage-note"><span className="line-dot" /> Click any person to explore their branch</div><div className="zoom-tools"><button type="button" onClick={() => setZoom((value) => Math.max(.5, value - .1))} aria-label="Zoom out">−</button><span>{Math.round(zoom * 100)}%</span><button type="button" onClick={() => setZoom((value) => Math.min(1.5, value + .1))} aria-label="Zoom in">＋</button><button type="button" onClick={() => setZoom(1)} aria-label="Reset zoom">↺</button></div>
-        <div className="tree-return"><button onClick={() => setSelectedId('arthur')} disabled={selectedId === 'arthur'}>↶ Return to roots</button></div><div className="tree-canvas" style={{ transform: `scale(${zoom})`, transformOrigin: 'center top' }}>
+        <div className="tree-return"><button onClick={() => setSelectedId('arthur')} disabled={selectedId === 'arthur'}>↶ Return to roots</button></div><div className="tree-canvas" style={{ transform: `scale(${zoom * treeScale})`, transformOrigin: 'center top' }}>
           <div className="root-couple"><PersonCard person={rootPerson} selectedId={selectedId} onSelect={setSelectedId} /><div className="partner-link">♡</div>{rootPartner ? <PersonCard person={rootPartner} selectedId={selectedId} onSelect={setSelectedId} /> : <button className="add-spouse-card" onClick={() => requestEdit(() => setModal('spouse'), false)}><span>＋</span><strong>Add spouse</strong><small>Link their story</small></button>}</div>
           <div className="connector" />
           <div className="branch-label"><span>THEIR CHILDREN</span><i /> <em>{rootPerson.children.length} {rootPerson.children.length === 1 ? 'child' : 'children'}</em><button className="branch-add" onClick={() => requestEdit(() => setModal('add'), false)}>＋ Add person</button></div>

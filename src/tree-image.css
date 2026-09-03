@@ -48,3 +48,4 @@
 .root-couple,.family-sibling-row{gap:8px;flex-wrap:wrap}
 .person-card:hover,.person-card.selected,.add-card:hover,.add-spouse-card:hover{background-color:transparent;background-image:url('./image.png');background-position:center;background-size:100% 100%;background-repeat:no-repeat;box-shadow:0 8px 18px #76533822}
 .zoom-tools{z-index:10}
+.person-card.selected{transform:scale(.86)}
