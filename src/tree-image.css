@@ -1,4 +1,4 @@
-.tree-stage{background:url('https://i.pinimg.com/1200x/bf/36/89/bf368964fd025b10d5574b188919d57e.jpg') center/cover no-repeat;isolation:isolate;overflow:hidden}
+.tree-stage{background:url('https://i.pinimg.com/1200x/bf/36/89/bf368964fd025b10d5574b188919d57e.jpg') center/cover no-repeat;isolation:isolate;overflow:auto}
 .tree-stage:before{display:none}
 .tree-stage:after{content:'';position:absolute;inset:0;background:#17351d26;z-index:0;pointer-events:none}
 .tree-canvas{position:relative;z-index:3}
