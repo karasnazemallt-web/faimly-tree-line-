@@ -14,6 +14,27 @@ const initialPeople = {
   you: { id: 'you', name: 'Your name', role: 'You', birth: '2000', location: 'Your hometown', note: 'The next chapter starts here.', partnerId: null, children: [], parentId: 'thomas' },
 }
 
+function createExpandedPeople() {
+  const people = Object.fromEntries(Object.entries(initialPeople).map(([id, person]) => [id, { ...person, children: [...person.children] }]))
+  const queue = Object.values(people).filter((person) => person.id !== 'elise' && !person.children.length)
+  let nextNumber = 1
+  while (Object.keys(people).length < 511) {
+    const parent = queue.shift()
+    if (!parent) break
+    const childCount = Math.min(2, 511 - Object.keys(people).length)
+    parent.children = []
+    for (let index = 0; index < childCount; index += 1) {
+      const id = `relative-${nextNumber}`
+      nextNumber += 1
+      const child = { id, name: `Family member ${nextNumber - 1}`, role: 'Family member', birth: `${1960 + (nextNumber % 45)}`, location: 'Family hometown', note: 'Part of the family story.', partnerId: null, children: [], parentId: parent.id }
+      people[id] = child
+      parent.children.push(id)
+      queue.push(child)
+    }
+  }
+  return people
+}
+
 function useAmbientSound() {
   const player = useRef(null)
   const [playing, setPlaying] = useState(false)
@@ -27,11 +48,11 @@ function useAmbientSound() {
 function getSavedPeople() {
   try {
     const saved = JSON.parse(localStorage.getItem('roots-tree-v4') || 'null')
-    if (!saved || typeof saved !== 'object') return initialPeople
+    if (!saved || typeof saved !== 'object') return createExpandedPeople()
     const normalized = Object.fromEntries(Object.entries(saved).map(([id, person]) => [id, normalizePerson(person, id)]))
-    return Object.keys(normalized).length ? normalized : initialPeople
+    return Object.keys(normalized).length >= 500 ? normalized : createExpandedPeople()
   } catch {
-    return initialPeople
+    return createExpandedPeople()
   }
 }
 
