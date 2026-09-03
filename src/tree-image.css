@@ -28,7 +28,7 @@
 .add-card span,.add-spouse-card span{float:none;color:#ffe0cf;font-size:22px}
 .add-card strong,.add-spouse-card strong{font-size:11px;color:#fffaf2}
 .add-card small,.add-spouse-card small{margin-top:0;color:#ffe0cf}
-.tree-canvas{padding-top:34px}
+.tree-canvas{padding:150px 20px 34px}
 .tree-return{position:absolute;top:14px;left:18px;z-index:4}.tree-return button{border:1px solid #9fbea5;border-radius:5px;background:#f7fbf7;color:#577a63;padding:7px 10px;font:10px 'DM Mono';cursor:pointer}.tree-return button:disabled{opacity:.45;cursor:default}
 .branch-label{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
 .branch-add{border:1px solid #9fbea5;border-radius:5px;background:#f7fbf7;color:#577a63;padding:6px 10px;font:10px 'DM Mono';cursor:pointer}
@@ -40,7 +40,7 @@
 .person-card::after,.add-card::after,.add-spouse-card::after{display:none}
 .person-card:hover,.person-card.selected,.add-card:hover,.add-spouse-card:hover{background-color:#c74c50;background-image:linear-gradient(rgba(74,0,4,.04),rgba(74,0,4,.18)),url('https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg');background-position:center;background-size:cover;background-blend-mode:multiply}
 .person-card,.add-card,.add-spouse-card{width:64px;height:88px;min-height:88px;aspect-ratio:auto;background-color:transparent;background-image:url('./image.png');background-position:center;background-size:100% 100%;background-repeat:no-repeat;background-blend-mode:normal;border:0;box-shadow:none;mix-blend-mode:multiply}
-.person-card{padding:32px 5px 6px;gap:1px;overflow:hidden}
+.person-card{padding:32px 5px 6px;gap:1px;overflow:hidden;vertical-align:middle}
 .person-copy{position:absolute;left:5px;right:5px;top:50%;width:auto;min-width:0;overflow:hidden;text-align:center;transform:translateY(-30%)}
 .person-card strong,.person-card small{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .person-card .avatar{display:none}
